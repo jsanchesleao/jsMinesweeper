@@ -80,14 +80,27 @@ function Node(x, y, td, minesweeper){
 	this._mark = Node.SAFE;
 	var _this = this;
 	td.onclick = function(){ Node.reveal(_this); };
-	td.onkeyup = function(e){ alert(e.which); };
 	td.oncontextmenu = function(){ Node._mark(_this); return false; };
+	td.ondblclick = function(){ Node.dblclick(_this); };
 	this.revealed = false;
 }
 
 Node.SAFE = 0;
 Node.DANGER = 1;
 Node.DOUBT = 2;
+
+Node.dblclick = function(node){
+	if(!node.revealed) return;
+	if(node.bombsAround() == 0) return;
+	var dangers = 0;
+	var reveals = [];
+	for(var i in node.around){ 
+		if(node.around[i]._mark == Node.DANGER) dangers++;
+		else if(!node.around[i].revealed) reveals.push(node.around[i]);
+	}
+	if(!node.bombsAround() == dangers) return;
+	for(var j in reveals) Node.reveal( reveals[j] ); 
+}
 
 Node._mark = function(node){
 	if(node.minesweeper.isGameOver())return;
