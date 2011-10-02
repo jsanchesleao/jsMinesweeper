@@ -22,9 +22,22 @@
 }
 
 .idle{
-	background-color: gray;
 	color: black;
 }
+
+
+.mark-SAFE{
+	background-color: gray;
+} 
+
+.mark-DOUBT{
+	background-color: yellow;
+}
+
+.mark-DANGER{
+	background-color: red;
+}
+
 
 .revealed-ok{
 	background-color: white;

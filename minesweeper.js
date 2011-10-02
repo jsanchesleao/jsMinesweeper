@@ -36,7 +36,7 @@ MineSweeper.prototype = {
 			this.allNodes.push([]);
 			for(var j = 0; j < this.width; j++){
 				var td = document.createElement("td");
-				td.className = "ms-td idle";
+				td.className = "ms-td idle mark-SAFE";
 				td.cell = new Node(j, i, td, this);
 				tr.appendChild(td);
 				this.allNodes[i].push(td.cell);
@@ -77,16 +77,42 @@ function Node(x, y, td, minesweeper){
 	this._minesweeper = minesweeper;
 	this._bomb = false;
 	this._number = 0;
+	this._mark = Node.SAFE;
 	var _this = this;
 	td.onclick = function(){ Node.reveal(_this); };
+	td.onkeyup = function(e){ alert(e.which); };
+	td.oncontextmenu = function(){ Node._mark(_this); return false; };
 	this.revealed = false;
 }
 
+Node.SAFE = 0;
+Node.DANGER = 1;
+Node.DOUBT = 2;
+
+Node._mark = function(node){
+	if(node.minesweeper.isGameOver())return;
+	if(node.revealed) return ;
+	node._mark += 1;
+	node._mark %= 3;
+	Node._markTd(node); 
+	return ;
+}
+
+Node._markTd = function(node){
+	var mark = node.td.className;
+	var state = "";
+	if(node._mark == Node.SAFE) state = "SAFE";
+	else if(node._mark == Node.DOUBT) state = "DOUBT";
+	else if(node._mark == Node.DANGER) state = "DANGER";
+
+	mark = mark.replace(/mark-(\w+)/, "mark-"+state);
+	node.td.className = mark;
+}
 
 Node.reveal = function(node){
-	window.console.log(node.minesweeper._squareCount);
-	if(node.minesweeper.isGameOver()) return;
 	if(!node) return;
+	if(node._mark == Node.DANGER) return;
+	if(node.minesweeper.isGameOver()) return;
 	if (node.revealed) return;
 	node.revealed = true;
 	Node._formatTd(node);
