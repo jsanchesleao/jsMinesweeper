@@ -98,7 +98,7 @@ Node.dblclick = function(node){
 		if(node.around[i]._mark == Node.DANGER) dangers++;
 		else if(!node.around[i].revealed) reveals.push(node.around[i]);
 	}
-	if(!node.bombsAround() == dangers) return;
+	if(!(node.bombsAround() == dangers)) return;
 	for(var j in reveals) Node.reveal( reveals[j] ); 
 }
 
